@@ -1,5 +1,4 @@
-# to do: set all last point a spill off sequence.
-# to do: -t 250 -250 write to lmdout 
+# todo: -t 250 -250 write to lmdout
 
 import argparse
 import daf2mpos as d2m
@@ -15,7 +14,7 @@ if __name__=="__main__":
     parser.add_argument("-t","--timeoffset", required=False, type=int,  nargs='+', help="Time offset in micro-sec,to adjust results in ~250ms level that was added to system determined timeoffset value;multiple values are acceptable, e.g. -t 250 -250 100", default=250)
     parser.add_argument("-w","--writetxt", required=False, action='store_true',   help="write all data in txt for plot", default="False")
     parser.add_argument("-l","--lmdout", required=False , help="write to .lmdout file directory, following by directory and file name or default the same path as .daf") 
-    parser.add_argument("-i","--initialspot", required=False, type=int,  nargs='+', help="Time offset of the first spot of each spill, default 10000ms",default=10000)
+    parser.add_argument("-i","--initialspot", required=False, type=int,  nargs='+', help="Time offset of the first spot of each spill in .msec., default 10ms",default=10)
     args = parser.parse_args() 
 
 # define daf file path.   mandatory.
@@ -53,7 +52,7 @@ if __name__=="__main__":
 # write lmdout file.
     if (args.mbr!=None):
         print("Detects write of lmdout from .daf and .mbr.")
-        writelmdout=dmlmdout.class_daf_mbr2lmdout(daf_file_path, args.mbr, manual_timeoffset,args.initialspot)
+        writelmdout=dmlmdout.class_daf_mbr2lmdout(daf_file_path, args.mbr, manual_timeoffset,int(args.initialspot[0])*1000)
         writelmdout.fun_daf_mbr2lmdout(lmdout_file_path)
         all_timeoffset=writelmdout.all_timeoffset
     else:

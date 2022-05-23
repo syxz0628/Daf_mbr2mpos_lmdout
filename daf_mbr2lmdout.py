@@ -67,10 +67,18 @@ class class_daf_mbr2lmdout:
         #
         self.start_point_timeoffset = self.fun_determin_start_point_timeoffset()
         self.all_timeoffset = self.fun_auto_determin_timeoffset_in_daf2()-int(self.read_mbr.voxel_info[0][10])
-        print("the daf(beam in)-mbr(start point)timeoffset is:", self.start_point_timeoffset)
-        print("the best match possible timeoffset is:", self.all_timeoffset)
+        # for test only
+        #self.all_timeoffset = self.start_point_timeoffset
+        #self.all_timeoffset=0
+        # for test only
+
+        print("the first beam in timestamp in MBR is: ", int(self.read_mbr.voxel_info[0][10]), " usec")
+        print("the first beam in timestamp in Daf is: ", (self.start_point_timeoffset + int(self.read_mbr.voxel_info[0][10]))," usec")
+        print("the daf(beam in)-mbr(start point)timeoffset is: ", self.start_point_timeoffset," usec")
+        print("the best match possible timeoffset is: ", self.all_timeoffset," usec")
         # write the first line
-        self.current_time_stamp = int(self.read_mbr.voxel_info[0][10]) + self.all_timeoffset - self.init_spot_timeoffset
+        #self.current_time_stamp = int(self.read_mbr.voxel_info[0][10]) + self.all_timeoffset - self.init_spot_timeoffset
+        self.current_time_stamp = int(self.mbr_modified_timestamp[0]) + self.all_timeoffset - self.init_spot_timeoffset
         self.current_number_point = 0
         self.current_begin_spill = 1
         self.current_end_spill = 0
@@ -81,27 +89,39 @@ class class_daf_mbr2lmdout:
         # write other lines
         self.previous_timestamp = self.current_time_stamp
         count_voxels_in_one_layer = 0
+        count_voxels_all=-1
         start_begin_of_spill_even_before_NP = False
+
         for tempvoxel_info in self.read_mbr.voxel_info:
             count_voxels_in_one_layer += 1
+            count_voxels_all += 1
             # BS event after ES is true
             if (start_begin_of_spill_even_before_NP):
-                self.fun_BS_event(tempvoxel_info)
+                self.fun_BS_event(count_voxels_all)
                 start_begin_of_spill_even_before_NP = False
             # NP event
-            self.fun_NP_event(tempvoxel_info)
+            self.fun_NP_event(count_voxels_all)
             # EOP event
             if count_voxels_in_one_layer == int(tempvoxel_info[12]):
                 self.fun_EOP_event()
                 self.fun_ES_event()
                 count_voxels_in_one_layer = 0
                 start_begin_of_spill_even_before_NP = True
-            self.previous_timestamp = self.current_time_stamp
-    def fun_NP_event(self, tempvoxel_info):
-        self.current_time_stamp = int(tempvoxel_info[10]) + self.all_timeoffset
+                print("found an end of plan, in ",int(self.mbr_modified_timestamp[count_voxels_all]))
+                self.previous_timestamp = self.current_time_stamp
+                continue
+            if (self.current_time_stamp-self.all_timeoffset) in self.MBR_beamoff_last_point_timestamp:
+                self.fun_ES_event()
+                start_begin_of_spill_even_before_NP = True
+                print("found an end of spill, in ",self.mbr_modified_timestamp[count_voxels_all])
+                self.previous_timestamp = self.current_time_stamp
+                continue
+
+    def fun_NP_event(self, count_voxels_all):
+        self.current_time_stamp = int(self.mbr_modified_timestamp[count_voxels_all]) + self.all_timeoffset
         self.current_number_point += 1
         # self.current_begin_spill no change
-        # self.current_end_spill no changee
+        # self.current_end_spill no change
         # self.current_end_of_plane no change
         self.current_energy = int(float(self.read_mbr.voxel_info[self.current_number_point - 1][1]))
         Current_Energy_Number = int(int(self.read_mbr.voxel_info[self.current_number_point - 1][0]) / 2)
@@ -120,7 +140,7 @@ class class_daf_mbr2lmdout:
         self.fun_write_one_line_info_to_lmdout_info()
         self.previous_timestamp = self.current_time_stamp
     def fun_ES_event(self):
-        self.current_time_stamp = self.previous_timestamp + 99
+        self.current_time_stamp = self.previous_timestamp + 100
         # self.current_number_point no change
         # self.current_begin_spill no change
         self.current_end_spill += 1
@@ -130,8 +150,8 @@ class class_daf_mbr2lmdout:
         self.current_focus = self.read_mbr.FocLevId[Current_Energy_Number]
         self.fun_write_one_line_info_to_lmdout_info()
         self.previous_timestamp = self.current_time_stamp
-    def fun_BS_event(self, tempvoxel_info):
-        self.current_time_stamp = int(tempvoxel_info[10]) + self.all_timeoffset
+    def fun_BS_event(self, count_voxels_all):
+        self.current_time_stamp = int(self.mbr_modified_timestamp[count_voxels_all])  + self.all_timeoffset-self.init_spot_timeoffset
         # self.current_number_point no change
         self.current_begin_spill += 1
         # self.current_end_spill no change
@@ -215,7 +235,7 @@ class class_daf_mbr2lmdout:
         temp_IcImCharge_array_float = map(float, temp_IcImCharge_array)
         temp_IcImCharge_array_float = list(temp_IcImCharge_array_float)
         total_charge = np.sum(np.array(temp_IcImCharge_array_float[-5:-1]))
-        total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-5])
+        total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-5]) # average last 5 values
         # print(temp_timestamp_array)
         # first_time_duration=int(temp_IcImCharge_array_float[0]*total_timestamp/total_charge)
         last_time_duration = int(temp_IcImCharge_array_float[-1] * total_timestamp / total_charge)
@@ -292,6 +312,7 @@ class class_daf_mbr2lmdout:
         # use the first match point and the other 4 big time gap to find possible match of mbr and daf
         daf_first_and_4_longest_timestamp = self.fun_find_daf_first_and_longest_4_timestamp()
         self.start_point_timeoffset = self.fun_determin_start_point_timeoffset()
+        print("Starting loop in gap of daf to find possible match timeoffset of MBR and Daf")
         for longtimegap in daf_first_and_4_longest_timestamp:
             print("loop in biggest 5 beam in timestamp gap in daf (including the very first):",longtimegap/1000,"msec")
             if ((longtimegap + int(self.read_mbr.voxel_info[-1][10]) - int(self.read_mbr.voxel_info[0][10]))
