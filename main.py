@@ -1,6 +1,5 @@
 # todo: -t 250 -250 write to lmdout
 # todo: change lmdout name, with percentage of match points
-# todo: lmdout change to default name the same as MBR
 import argparse
 import daf2mpos as d2m
 import show_daf_figure as sdaf

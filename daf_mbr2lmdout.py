@@ -234,8 +234,8 @@ class class_daf_mbr2lmdout:
         # total_charge=0
         temp_IcImCharge_array_float = map(float, temp_IcImCharge_array)
         temp_IcImCharge_array_float = list(temp_IcImCharge_array_float)
-        total_charge = np.sum(np.array(temp_IcImCharge_array_float[-5:-1]))
-        total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-5]) # average last 5 values
+        total_charge = np.sum(np.array(temp_IcImCharge_array_float[-3:-1]))
+        total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-3]) # average last 2 values
         # print(temp_timestamp_array)
         # first_time_duration=int(temp_IcImCharge_array_float[0]*total_timestamp/total_charge)
         last_time_duration = int(temp_IcImCharge_array_float[-1] * total_timestamp / total_charge)
