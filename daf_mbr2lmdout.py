@@ -28,7 +28,8 @@ class class_daf_mbr2lmdout:
         self.previous_timestamp = 0
         self.MBR_beamoff_last_point_timestamp = []
         self.daf_beamoff_last_point_timestamp = []
-
+        self.total_charge=0
+        self.total_timestamp=0
         # get daf and mbr information
         self.read_daf = rdaf.class_read_daf(self.daf_file_path)
         self.read_mbr = rmbr.class_read_mbr(self.mbr_file_path)
@@ -230,15 +231,18 @@ class class_daf_mbr2lmdout:
             previous_timestamp = tempvoxel_info[10]
         return mod_timestamp
     def fun_correct_first_last_timestamp_from_temp_time_array(self, temp_timestamp_array, temp_IcImCharge_array):
+        if (len(temp_timestamp_array)<3):
+            print("happen")
         mod_first_last_timestamp = []
         # total_charge=0
         temp_IcImCharge_array_float = map(float, temp_IcImCharge_array)
         temp_IcImCharge_array_float = list(temp_IcImCharge_array_float)
-        total_charge = np.sum(np.array(temp_IcImCharge_array_float[-3:-1]))
-        total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-3]) # average last 2 values
-        # print(temp_timestamp_array)
-        # first_time_duration=int(temp_IcImCharge_array_float[0]*total_timestamp/total_charge)
-        last_time_duration = int(temp_IcImCharge_array_float[-1] * total_timestamp / total_charge)
+        if (len(temp_timestamp_array) > 4):
+            self.total_charge = np.sum(np.array(temp_IcImCharge_array_float[-5:-1]))
+            self.total_timestamp = int(temp_timestamp_array[-2]) - int(temp_timestamp_array[-5]) # average last 4 values
+            last_time_duration = int(temp_IcImCharge_array_float[-1] * self.total_timestamp / self.total_charge)
+        else: # some layer/spill has only 2 points... [-5] will be out of index.
+            last_time_duration =int(temp_IcImCharge_array_float[-1] * self.total_timestamp / self.total_charge)
         # modify first point(default unactive)
         # mod_first_last_timestamp.append(str(int(temp_timestamp_array[1])-first_time_duration))
         mod_first_last_timestamp = mod_first_last_timestamp + temp_timestamp_array[0:-1]
