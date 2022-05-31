@@ -152,9 +152,9 @@ class class_daf_mbr2lmdout:
                     print("found an end of spill, in ", self.mbr_modified_timestamp[count_voxels_all])
                     self.previous_timestamp = self.current_time_stamp
                     continue
-                for templmdout in self.lmdout_info:
-                    lmdoutFile.write(templmdout)
-                    lmdoutFile.write('\n')
+            for templmdout in self.lmdout_info:
+                lmdoutFile.write(templmdout)
+                lmdoutFile.write('\n')
 
     def fun_NP_event(self, count_voxels_all):
         self.current_time_stamp = int(self.mbr_modified_timestamp[count_voxels_all]) + self.all_timeoffset
@@ -216,6 +216,7 @@ class class_daf_mbr2lmdout:
         list_write_to_lmdout.append(self.current_focus)
         list_write_to_lmdout.append(0)
         self.lmdout_info.append(" ".join(str(i) for i in list_write_to_lmdout))
+        #print(self.lmdout_info)
 
     def fun_mbr_bestmatch_daf_timeoffset_in_daf(self, mbr_timestamp, init_timeoffset):
         shift_MBR_and_daf_match_info_timeoffset = []

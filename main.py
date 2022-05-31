@@ -2,10 +2,10 @@
 # todo: change lmdout name, with percentage of match points
 # todo: show mbr fig directly only ( not share x axis)
 # todo: <E> !fileversion 3.0AW3: unknown file version
-# todo: bs first line one 0.
-# todo: items
-# todo: 仅1个spot，直接判定为endpoint，ms,start point设置为0.
-# todo: mbr end offset 少或者多的原因及解决
+
+
+
+
 import argparse
 import daf2mpos as d2m
 import show_daf_figure as sdaf
@@ -15,7 +15,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d","--daf", required=True, help=".daf file path(mandatory)") 
     #parser.add_argument("-p","--mpos", required=False , nargs='?',  const="default_directory", help="write to .mpos file, following by directory and file name or default the same path as .daf",  default="nompos")
-    parser.add_argument("-o", "--mpos", required=False, nargs='+',
+    parser.add_argument("-o", "--mpos", required=False, nargs='?',
                         help="write to .mpos file, following by directory and file name or default the same path as .daf")
     parser.add_argument("-s","--showfigs", required=False,  action='store_true', help="show daf and related figures", default="False")
     parser.add_argument("-m","--mbr", nargs='?',required=False, help="machine beam record .xml file path")
@@ -25,7 +25,7 @@ if __name__=="__main__":
                         default=250)
     parser.add_argument("-w", "--writetxt", required=False, action='store_true', help="write all data in txt for plot",
                         default="False")
-    parser.add_argument("-l", "--lmdout", required=False,
+    parser.add_argument("-l", "--lmdout", required=False, nargs='?',
                         help="write to .lmdout file directory, following by directory and file name or default the same path as MBR .xml")
     parser.add_argument("-i", "--initialspot", required=False, type=int, nargs='+',
                         help="Time offset of the first spot of each spill in .msec., default 10ms", default=10)
@@ -62,6 +62,8 @@ if __name__=="__main__":
         directory = MBR_filepath[:MBR_filepath.rfind(".") + 1]
         lmdout_file_path = directory + "lmdout"
     elif (args.mbr!=None and args.lmdout != None):
+        MBR_filepath = args.mbr
+        directory = MBR_filepath[:MBR_filepath.rfind(".") + 1]
         lmdout_file_path = args.lmdout
 # write lmdout file or show MBR figure
     if (args.mbr==None and args.showfigs==True): #show daf figure only
