@@ -13,7 +13,7 @@ class class_daf2mpos:
         daf_file_info=read_daf.class_read_daf(self.daf_file_path)
      
         #print(daf_file_info.DataNo)
-        fileversion="1.0"
+        fileversion="20090508"
         dateinfo=daf_file_info.date
         Start_Phase=daf_file_info.Start_Phase
         End_Phase=daf_file_info.End_Phase
