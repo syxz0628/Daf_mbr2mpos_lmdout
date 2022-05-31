@@ -31,7 +31,7 @@ class class_read_mbr:
         self.IrradTimeIes=[]
 # voxel information includes all main information for each points. its formats is:
 # list voxel={[IESNumber,IESenergy, TotalVoxelIndex,ActFocusX,ActFocusY,ScannerX,ScannerY,MwpcPosX,MwpcPosY,IcImCharge,TimeStamp,TimeStampAbs,VxCnt_in_one_layer]}
-# search index     0                     1                           2                   3                4                   5                 6                 7                 8                  9                   10                 11                             12
+# search index     0         1           2             3       4          5         6         7        8       9          10           11      12e
 # example voxel_info[8][11] is the TimeStampabs  value from IES: voxel_info[8][0], Voxel: voxel_info[8][2].
         self.voxel_info=[]
         try:
