@@ -307,9 +307,9 @@ class class_daf_mbr2lmdout:
                         self.mbr_start_points.append(self.mbr_origin_timestamp[temp_count_voxels_in_MBR])  # start point
                         self.mbr_end_points.append(
                             self.mbr_origin_timestamp[temp_mbr_timestamp_index])  # this end point
-
-                        if (temp_mbr_timestamp_index - temp_count_voxels_in_MBR) == 1:
-                            self.mbr_start_points[-1] = 0  # 仅1个spot，直接判定为endpoint，ms,start point设置为0.
+                        #
+                        # if (temp_mbr_timestamp_index == temp_count_voxels_in_MBR):
+                        #     self.mbr_start_points[-1] = 0  # 仅1个spot，直接判定为endpoint，ms,start point设置为0.
                         break
             else:  # 两spill间距过小。尝试猜测end point。查找 daf start point前10个以内数据里，第一个符合>115ms,20ms的数据。
                 for temp_mbr_timestamp_index in range(temp_count_voxels_in_MBR, len(self.mbr_origin_timestamp) - 1):
@@ -358,7 +358,7 @@ class class_daf_mbr2lmdout:
         tempendpoint_offset = 0
         tempendpoint_offset_determinby_2ndpoint = 0
         for temp in range(0, len(self.mbr_end_points)):
-            if self.mbr_start_points[temp] == 0:
+            if self.mbr_start_points[temp] == self.mbr_end_points[temp]:
                 tempendpoint_offset = 0
             else:
                 tempendpoint_index = self.mbr_origin_timestamp.index(self.mbr_end_points[temp])
