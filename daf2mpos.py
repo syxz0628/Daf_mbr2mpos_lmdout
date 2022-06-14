@@ -1,15 +1,24 @@
 import read_daf
+import related_funs
 class class_daf2mpos:
-    def __init__(self, daf_file_path, mpos_file_path):
+    def __init__(self, daf_file_path, mpos_file_path , path2logfile):
+        self.path2logfile=path2logfile
         self.daf_file_path = daf_file_path
         self.mpos_file_path=mpos_file_path
         self.timeoffset=0
         try:
             self.fun_daf2mpos()
         except ValueError: 
-            print("fun_daf2mpos error, daf/mpos file correct?")
+            loginfo="fun_daf2mpos error, daf/mpos file correct?"
+            print(loginfo)
+            related_funs.writelog(self.path2logfile,loginfo)
+
+
             
     def fun_daf2mpos(self):
+        loginfo = '\nFor: ' + self.daf_file_path
+        related_funs.writelog(self.path2logfile, loginfo)
+
         daf_file_info=read_daf.class_read_daf(self.daf_file_path)
      
         #print(daf_file_info.DataNo)
@@ -36,4 +45,6 @@ class class_daf2mpos:
                     # corresponding CT number, should be implemented in the future.
                     mposFile.write(" -1 ")
                     mposFile.write(str(daf_file_info.RespLevel[i])+" 0.000 0.000\n")
-            print("mpos file was generated in: ", self.mpos_file_path)
+            loginfo="mpos file was generated in: "+ self.mpos_file_path
+            print(loginfo)
+            related_funs.writelog(self.path2logfile, loginfo)

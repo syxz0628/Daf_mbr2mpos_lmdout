@@ -1,12 +1,15 @@
 import read_mbr as rmbr
 import read_daf as rdaf
 import numpy as np
+
+import related_funs
 import related_funs as r_funs
 import show_daf_figure as s_fig
 
 
 class class_daf_mbr2lmdout:
-    def __init__(self, daf_file_path, mbr_file_path, manual_timeoffset, init_spot_timeoffset):
+    def __init__(self, daf_file_path, mbr_file_path, manual_timeoffset, init_spot_timeoffset,path2logfile):
+        self.path2logfile=path2logfile
         self.daf_file_path = daf_file_path
         self.mbr_file_path = mbr_file_path
         self.init_spot_timeoffset = init_spot_timeoffset
@@ -59,11 +62,14 @@ class class_daf_mbr2lmdout:
         #    # modify MBR last point according to charge and get the mbr_mod_timestamp
         # 3 use MBR-mod-timestamp data find the best match timeoffset with daf (maybe more than 1, choose the first)
         print("Starting find temp best match timeoffset of MBR and Daf")
+        related_funs.writelog(self.path2logfile,self.mbr_file_path)
         mbr_temp_bestmatch_timeoffset_in_daf = self.fun_mbr_bestmatch_daf_timeoffset_in_daf(self.mbr_origin_timestamp,
                                                                                             0)
         if (mbr_temp_bestmatch_timeoffset_in_daf == 0):
+            print("~~~~~~~~~~~~~~~~~~~~~~~ERROR~~~~~~~~~~~~~~~~~~~~")
             print("~~~could not match well(<90%), match of start point will be shown in figure.")
             print("~~~~~~~You need to check daf and mbr file if they really matches")
+            related_funs.writelog(self.path2logfile,'could not match, check daf and mbr')
             self.all_timeoffset = self.start_point_timeoffset
         else:
             # determin self.mbr_start_points and self.mbr_end_points.
@@ -92,7 +98,10 @@ class class_daf_mbr2lmdout:
         print(self.read_mbr.Energy_Number)
         if (mbr_temp_bestmatch_timeoffset_in_daf != 0):
             self.fun_write_lmdout_info()
-            print("lmdout file was generated in: ", self.lmdout_file_path)
+            loginfo = "lmdout file was generated in: " + self.lmdout_file_path
+            print(loginfo)
+            related_funs.writelog(self.path2logfile, loginfo)
+
 
     def fun_write_lmdout_info(self):
         with open(self.lmdout_file_path, "w") as lmdoutFile:

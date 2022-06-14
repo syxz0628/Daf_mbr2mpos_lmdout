@@ -1,8 +1,6 @@
 # todo: -t 250 -250 write to lmdout
 # todo: change lmdout name, with percentage of match points
 # todo: show mbr fig directly only ( not share x axis)
-# todo: <E> !fileversion 3.0AW3: unknown file version
-
 
 
 
@@ -30,7 +28,9 @@ if __name__=="__main__":
     parser.add_argument("-i", "--initialspot", required=False, type=int, nargs='+',
                         help="Time offset of the first spot of each spill in .msec., default 10ms", default=10)
     parser.add_argument("-z", "--showdebug", required=False, type=int, help="show all figures for debug. MBR time shift by the given value")
-    args = parser.parse_args() 
+    parser.add_argument("-g", "--log", required=False, nargs='?',
+                        help="write error/successed information to .log file")
+    args = parser.parse_args()
 
 # define daf file path.   mandatory.
     daf_file_path=args.daf
@@ -44,7 +44,7 @@ if __name__=="__main__":
 #
 # write mpos file.
     print("Detects write of mpos from .daf.")
-    d2m.class_daf2mpos(daf_file_path, mpos_file_path)
+    d2m.class_daf2mpos(daf_file_path, mpos_file_path,args.log)
 #
 # define Time offset
     manual_timeoffset = []
@@ -69,12 +69,12 @@ if __name__=="__main__":
     if (args.mbr==None and args.showfigs==True): #show daf figure only
         print("No mbr file detected, script runs without generate the lmdout file")
         print("Detects show figures of daf.")
-        showfig=sdaf.class_show_daf_MBR_fig(daf_file_path, 0)
+        showfig=sdaf.class_show_daf_MBR_fig(daf_file_path)
         showfig.fun_show_daf_fig()
     elif (args.mbr != None): # write lmdout and/or show mbr figure or debug figure.
         print("Detects write of lmdout from .daf and .mbr.")
         writelmdout = dmlmdout.class_daf_mbr2lmdout(daf_file_path, MBR_filepath, manual_timeoffset*1000,
-                                                    args.initialspot * 1000)
+                                                    args.initialspot * 1000,args.log)
         writelmdout.fun_daf_mbr2lmdout(lmdout_file_path)
         writelmdout.fun_daf_MBR_figs(args.showfigs,args.showdebug)
 #
