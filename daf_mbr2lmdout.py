@@ -250,7 +250,7 @@ class class_daf_mbr2lmdout:
                     shift_MBR_and_daf_match_info_timeoffset.append(longtimegap + n)
                     shift_MBR_and_daf_match_info_matchpoints_percent.append(
                         self.fun_check_percentage_match_daf_shifted_MBR_match(mod_MBR_all_timestamp))
-                    if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.95):
+                    if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
                         print("possible timestamp offset in daf (msec):", (longtimegap + n) / 1000)
                         print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
         else:
@@ -263,7 +263,7 @@ class class_daf_mbr2lmdout:
                 shift_MBR_and_daf_match_info_timeoffset.append(init_timeoffset + n)
                 shift_MBR_and_daf_match_info_matchpoints_percent.append(
                     self.fun_check_percentage_match_daf_shifted_MBR_match(mod_MBR_all_timestamp))
-                if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.95):
+                if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
                     print("possible timestamp offset in daf (msec):", (delta_daf_mbr_start_point + n) / 1000)
                     print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
         bestmatchlist = []
@@ -271,15 +271,15 @@ class class_daf_mbr2lmdout:
             bestmatchlist = r_funs.max_index(shift_MBR_and_daf_match_info_matchpoints_percent)
         except:
             return 0
-        if (max(shift_MBR_and_daf_match_info_matchpoints_percent) > 0.95):
+        if (max(shift_MBR_and_daf_match_info_matchpoints_percent) > 0.9):
             if (len(bestmatchlist) > 1):
                 print(len(bestmatchlist), " best match timeoffset were found:")
                 for bestmatchi in bestmatchlist:
                     print(shift_MBR_and_daf_match_info_timeoffset[bestmatchi] / 1000, "msec",
                           shift_MBR_and_daf_match_info_matchpoints_percent[bestmatchi], "points matches")
                     temp_timeoffset.append(shift_MBR_and_daf_match_info_timeoffset[bestmatchi])
-                print("the minimal timestamp will be selected for further calculation")
-                determin_auto_timeoffset = min(temp_timeoffset)
+                print("the maximum timestamp will be selected for further calculation")
+                determin_auto_timeoffset = max(temp_timeoffset)
             elif (len(bestmatchlist) == 1):
                 determin_auto_timeoffset = shift_MBR_and_daf_match_info_timeoffset[bestmatchlist[0]]
         else:
