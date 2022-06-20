@@ -250,9 +250,9 @@ class class_daf_mbr2lmdout:
                     shift_MBR_and_daf_match_info_timeoffset.append(longtimegap + n)
                     shift_MBR_and_daf_match_info_matchpoints_percent.append(
                         self.fun_check_percentage_match_daf_shifted_MBR_match(mod_MBR_all_timestamp))
-                    if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
-                        print("possible timestamp offset in daf (msec):", (longtimegap + n) / 1000)
-                        print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
+                    #if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
+                    #    print("possible timestamp offset in daf (msec):", (longtimegap + n) / 1000)
+                    #    print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
         else:# use modified MBR to find best match final info.
             delta_daf_mbr_start_point = init_timeoffset - mbr_timestamp[0]
             print("Starting loop in ±2000msec to find the best match timeoffset of MBR and Daf")
@@ -263,9 +263,9 @@ class class_daf_mbr2lmdout:
                 shift_MBR_and_daf_match_info_timeoffset.append(init_timeoffset + n)
                 shift_MBR_and_daf_match_info_matchpoints_percent.append(
                     self.fun_check_percentage_match_daf_shifted_MBR_match(mod_MBR_all_timestamp))
-                if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
-                    print("possible timestamp offset in daf (msec):", (delta_daf_mbr_start_point + n) / 1000)
-                    print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
+                #if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
+                #    print("possible timestamp offset in daf (msec):", (delta_daf_mbr_start_point + n) / 1000)
+                #    print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
             try:
                 loginfo = 'the possible match percentage is:' + str(
                     max(shift_MBR_and_daf_match_info_matchpoints_percent))
