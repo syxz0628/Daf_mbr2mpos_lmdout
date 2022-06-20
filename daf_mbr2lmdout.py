@@ -138,6 +138,7 @@ class class_daf_mbr2lmdout:
             # list voxel={[IESNumber,IESenergy,TotalVoxelIndex,ActFocusX,ActFocusY,ScannerX,ScannerY,MwpcPosX,MwpcPosY,IcImCharge,TimeStamp,TimeStampAbs]}
             # search index     0                     1                 2                   3                4                   5                 6                 7                 8                  9                   10                 11
             #
+            print('start to find end of plan and end of spill')
             for tempvoxel_info in self.read_mbr.voxel_info:
                 count_voxels_in_one_layer += 1
                 count_voxels_all += 1
@@ -153,13 +154,13 @@ class class_daf_mbr2lmdout:
                     self.fun_ES_event()
                     count_voxels_in_one_layer = 0
                     start_begin_of_spill_even_before_NP = True
-                    print("found an end of plan, in ", int(self.mbr_modified_timestamp[count_voxels_all]))
+                    #print("found an end of plan, in ", int(self.mbr_modified_timestamp[count_voxels_all]))
                     self.previous_timestamp = self.current_time_stamp
                     continue
                 if (self.current_time_stamp - self.all_timeoffset) in self.MBR_beamoff_last_point_timestamp:
                     self.fun_ES_event()
                     start_begin_of_spill_even_before_NP = True
-                    print("found an end of spill, in ", self.mbr_modified_timestamp[count_voxels_all])
+                    #print("found an end of spill, in ", self.mbr_modified_timestamp[count_voxels_all])
                     self.previous_timestamp = self.current_time_stamp
                     continue
             for templmdout in self.lmdout_info:
