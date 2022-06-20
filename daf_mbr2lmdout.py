@@ -253,7 +253,7 @@ class class_daf_mbr2lmdout:
                     if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
                         print("possible timestamp offset in daf (msec):", (longtimegap + n) / 1000)
                         print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
-        else:
+        else:# use modified MBR to find best match final info.
             delta_daf_mbr_start_point = init_timeoffset - mbr_timestamp[0]
             print("Starting loop in ±2000msec to find the best match timeoffset of MBR and Daf")
             for n in range(-2000000, 2000000, 1000):  # cycle in init_timeoffset ±2000msec time step 1000us
@@ -270,7 +270,11 @@ class class_daf_mbr2lmdout:
         try:
             bestmatchlist = r_funs.max_index(shift_MBR_and_daf_match_info_matchpoints_percent)
         except:
+            loginfo = 'NO any match info was found, check MBR and daf data!'
+            related_funs.writelog(self.path2logfile, loginfo)
             return 0
+        loginfo = 'the possible match percentage is:' + max(shift_MBR_and_daf_match_info_matchpoints_percent)
+        related_funs.writelog(self.path2logfile, loginfo)
         if (max(shift_MBR_and_daf_match_info_matchpoints_percent) > 0.9):
             if (len(bestmatchlist) > 1):
                 print(len(bestmatchlist), " best match timeoffset were found:")
