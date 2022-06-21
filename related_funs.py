@@ -9,6 +9,6 @@ def max_index(lst_int):
     return index  #返回一个列表
 def writelog(path2log,writeinfo):
     if path2log != None:
-        print('log added in file:', path2log)
+        print('Added info in logfile:', path2log)
         with open(path2log, 'a+') as logfile:
             logfile.writelines(writeinfo+os.linesep)
