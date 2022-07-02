@@ -455,8 +455,11 @@ class class_daf_mbr2lmdout:
     def fun_check_percentage_match_daf_shifted_MBR_match(self, mod_MBR_all_timestamp):
         count_match = 0
         for m in mod_MBR_all_timestamp:
-            if self.read_daf.BeamIn[int(m / 25000)] > 0:
-                count_match += 1
+            try:
+                if self.read_daf.BeamIn[int(m / 25000)] > 0:
+                    count_match += 1
+            except:
+                print('not possible')
         return (float(count_match / len(mod_MBR_all_timestamp)))
 
     def fun_determin_start_point_timeoffset(self):
