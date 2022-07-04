@@ -27,7 +27,9 @@ if __name__=="__main__":
                         help="write to .lmdout file directory, following by directory and file name or default the same path as MBR .xml")
     parser.add_argument("-i", "--initialspot", required=False, type=int, nargs='+',
                         help="Time offset of the first spot of each spill in .msec., default 10ms", default=10)
-    parser.add_argument("-z", "--showdebug", required=False, type=int, help="show all figures for debug. MBR time shift by the given value")
+    parser.add_argument("-z", "--showdebug", required=False, type=int, help="show all DAF and MBR figures for debug. MBR shows start and end points only")
+    parser.add_argument("-Z", "--showdebug2", required=False, type=int,
+                        help="show all figures for debug. MBR time shift by the given value")
     parser.add_argument("-g", "--log", required=False, nargs='?',
                         help="write error/successed information to .log file")
     args = parser.parse_args()
@@ -71,10 +73,14 @@ if __name__=="__main__":
         print("Detects show figures of daf.")
         showfig=sdaf.class_show_daf_MBR_fig(daf_file_path)
         showfig.fun_show_daf_fig()
-    elif (args.mbr != None): # write lmdout and/or show mbr figure or debug figure.
+    elif (args.mbr != None and args.showdebug == None and args.showdebug2 == None): # write lmdout and/or show mbr figure or debug figure.
         print("Detects write of lmdout from .daf and .mbr.")
         writelmdout = dmlmdout.class_daf_mbr2lmdout(daf_file_path, MBR_filepath, manual_timeoffset*1000,
                                                     args.initialspot * 1000,args.log)
         writelmdout.fun_daf_mbr2lmdout(lmdout_file_path)
-        writelmdout.fun_daf_MBR_figs(args.showfigs,args.showdebug)
-#
+        writelmdout.fun_daf_MBR_figs(args.showfigs,args.showdebug,args.showdebug2)
+    elif (args.mbr != None and args.showdebug2 != None): # show daf and MBR with given offset
+        print("Detects show figures of daf and MBR with offset:", args.showdebug2)
+        writelmdout = dmlmdout.class_daf_mbr2lmdout(daf_file_path, MBR_filepath, manual_timeoffset * 1000,
+                                                    args.initialspot * 1000, args.log)
+        writelmdout.fun_daf_MBR_figs(args.showfigs,args.showdebug,args.showdebug2)

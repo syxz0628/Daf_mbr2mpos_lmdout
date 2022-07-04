@@ -82,7 +82,8 @@ class class_daf_mbr2lmdout:
                                                                                            mbr_temp_bestmatch_timeoffset_in_daf)
             self.all_timeoffset = mbr_bestmatch_timeoffset_in_daf - int(self.read_mbr.voxel_info[0][10])
         # for test only
-        # self.all_timeoffset = self.start_point_timeoffset
+
+            #self.all_timeoffset = self.start_point_timeoffset
         # self.all_timeoffset = mbr_temp_bestmatch_timeoffset_in_daf-int(self.read_mbr.voxel_info[0][10])
         # self.mbr_modified_timestamp=self.mbr_origin_timestamp
         # for test only
@@ -101,7 +102,6 @@ class class_daf_mbr2lmdout:
             loginfo = "lmdout file was generated in: " + self.lmdout_file_path
             print(loginfo)
             related_funs.writelog(self.path2logfile, loginfo)
-
 
     def fun_write_lmdout_info(self):
         with open(self.lmdout_file_path, "w") as lmdoutFile:
@@ -251,6 +251,9 @@ class class_daf_mbr2lmdout:
                     shift_MBR_and_daf_match_info_timeoffset.append(longtimegap + n)
                     shift_MBR_and_daf_match_info_matchpoints_percent.append(
                         self.fun_check_percentage_match_daf_shifted_MBR_match(mod_MBR_all_timestamp))
+                if max(shift_MBR_and_daf_match_info_matchpoints_percent)>0.99:
+                    print('found best match points(>99% match), break')
+                    break
                     #if (shift_MBR_and_daf_match_info_matchpoints_percent[-1] > 0.9):
                     #    print("possible timestamp offset in daf (msec):", (longtimegap + n) / 1000)
                     #    print("point matches percentage:", shift_MBR_and_daf_match_info_matchpoints_percent[-1])
@@ -339,7 +342,7 @@ class class_daf_mbr2lmdout:
                     if ((self.mbr_origin_timestamp[temp_mbr_timestamp_index + 1] + temp_timeoffset)
                             > daf_start_points[temp_daf_starttimeindex + 1]):
                         if len(temp_timestamp_array) == 1:
-                            self.mbr_start_points.append(0)
+                            self.mbr_start_points.append(temp_timestamp_array[0])
                             self.mbr_end_points.append(temp_timestamp_array[0])
                             break
                         elif len(temp_timestamp_array) < 10 and len(temp_timestamp_array) > 1:
@@ -383,7 +386,7 @@ class class_daf_mbr2lmdout:
             else:
                 tempendpoint_index = self.mbr_origin_timestamp.index(self.mbr_end_points[temp])
                 tempstartpoint_index = self.mbr_origin_timestamp.index(self.mbr_start_points[temp])
-                if tempendpoint_index - tempstartpoint_index >= 3:
+                if tempendpoint_index - tempstartpoint_index >= 3: # more than 3 MBR points exist
                     total_IcImCharge = 0
                     total_timestamp = 0
                     for timestampindex in range(tempstartpoint_index + 2, tempendpoint_index):
@@ -459,7 +462,7 @@ class class_daf_mbr2lmdout:
                 if self.read_daf.BeamIn[int(m / 25000)] > 0:
                     count_match += 1
             except:
-                print('not possible')
+                print('not possible to find best match percentage, continue...')
         return (float(count_match / len(mod_MBR_all_timestamp)))
 
     def fun_determin_start_point_timeoffset(self):
@@ -471,12 +474,18 @@ class class_daf_mbr2lmdout:
         start_point_timeoffset = start_beamin_time_in_daf - int(self.read_mbr.voxel_info[0][10])
         return start_point_timeoffset
 
-    def fun_daf_MBR_figs(self, showfigs, showdebugfigs):
+    def fun_daf_MBR_figs(self, showfigs, showdebugfigs, showdebugfigs2):
         show_fig_info = s_fig.class_show_daf_MBR_fig(self.daf_file_path)
         if showdebugfigs != None:
-            print("Detects show of figures of daf and MBR in debug mode.")
+            print("Detects show of figures of daf and MBR in debug mode/start end points only.")
             show_fig_info.fun_show_daf_MBR_fig(self.all_timeoffset, self.mbr_origin_timestamp, self.mbr_start_points,
                                                self.mbr_end_points)
+        elif showdebugfigs2 != None:
+            print("Detects show of figures of daf and MBR in debug mode2/ daf and ori MBR with offset.")
+            mbr_ori_mod_timestamp=[]
+            for timestamp in self.mbr_origin_timestamp:
+                mbr_ori_mod_timestamp.append(timestamp+int(showdebugfigs2))
+            show_fig_info.fun_show_daf_MBR_fig(self.all_timeoffset, mbr_ori_mod_timestamp, None, None)
         elif showfigs == True:
             print("Detects show of figures of daf and MBR.")
             show_fig_info.fun_show_daf_MBR_fig(self.all_timeoffset, self.mbr_origin_timestamp,

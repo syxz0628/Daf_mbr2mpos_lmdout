@@ -139,7 +139,7 @@ class class_show_daf_MBR_fig:
         point_timestamp_msec = [i / 1000 for i in point_time_stamp]
         axRespIrrPoint.scatter(point_timestamp_msec, points, color='purple', label='Irr points')
 
-        axRespIrrPoint.set_ylabel('Irr points')
+        axRespIrrPoint.set_ylabel('Irr MBR ori points')
         axRespIrrPoint.set_ylim(-0.5, 1.5)
         axRespIrrPoint.format_coord = self.format_coord
         #axRespIrrPoint.set_xlabel('Time(msec)')
@@ -149,21 +149,33 @@ class class_show_daf_MBR_fig:
         axRespIrrLastPoint = plt.subplot(515,sharex=axRespLevel)
         points_endpoint=[]
         point_start_end_time_stamp=[]
-        for temptimestampinfo in mbr_timestamp_info2:
-            point_start_end_time_stamp.append(int(temptimestampinfo)+all_timeoffset)
-            points_endpoint.append(1)
-        if mbr_timestamp_info3!=None:
+        if mbr_timestamp_info3 != None and mbr_timestamp_info2!=None: # shows start and end points only for debug
+            for temptimestampinfo in mbr_timestamp_info2:
+                point_start_end_time_stamp.append(int(temptimestampinfo)+all_timeoffset)
+                points_endpoint.append(1)
+
             for temptimestampinfo in mbr_timestamp_info3:
                 point_start_end_time_stamp.append(int(temptimestampinfo)+all_timeoffset)
                 points_endpoint.append(1)
-        point_timestamp_msec = [i / 1000 for i in point_start_end_time_stamp]
-        axRespIrrLastPoint.scatter(point_timestamp_msec, points_endpoint, color='purple', label='Irr start/end points')
+            point_timestamp_msec = [i / 1000 for i in point_start_end_time_stamp]
+            axRespIrrLastPoint.scatter(point_timestamp_msec, points_endpoint, color='purple', label='Irr start/end points')
 
-        axRespIrrLastPoint.set_ylabel('Irr start/end points')
-        axRespIrrLastPoint.set_ylim(-0.5, 1.5)
-        axRespIrrLastPoint.format_coord = self.format_coord
-        axRespIrrLastPoint.set_xlabel('Time(msec)')
+            axRespIrrLastPoint.set_ylabel('Irr start/end points')
+            axRespIrrLastPoint.set_ylim(-0.5, 1.5)
+            axRespIrrLastPoint.format_coord = self.format_coord
+            axRespIrrLastPoint.set_xlabel('Time(msec)')
+        elif mbr_timestamp_info2!=None:
+            for temptimestampinfo in mbr_timestamp_info2:
+                point_start_end_time_stamp.append(int(temptimestampinfo)+all_timeoffset)
+                points_endpoint.append(1)
+            point_timestamp_msec = [i / 1000 for i in point_start_end_time_stamp]
+            axRespIrrLastPoint.scatter(point_timestamp_msec, points_endpoint, color='purple',
+                                       label='Irr MBR mod points')
 
+            axRespIrrLastPoint.set_ylabel('Irr MBR mod points')
+            axRespIrrLastPoint.set_ylim(-0.5, 1.5)
+            axRespIrrLastPoint.format_coord = self.format_coord
+            axRespIrrLastPoint.set_xlabel('Time(msec)')
         # cross line
         cursor = Cursor(axRespIrrPoint, horizOn=True, useblit=True, color='r', linewidth=1, linestyle='dotted')
 

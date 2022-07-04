@@ -1,3 +1,6 @@
-combine_log_name = '/u/ysheng/MyAIXd/projects/patients/commands/TRiP_logs/00_total.log'
-combine_log_path=combine_log_name[:combine_log_name.rfind('/')+1]
-print(combine_log_path)
+a=[0,1,2,3,4,5]
+for i in range(0,99):
+    print(i)
+    print(max(a))
+    if max(a)>1 :
+        break
