@@ -238,7 +238,13 @@ class class_daf_mbr2lmdout:
             # use the first match point and the other 4 big time gap to find possible match of mbr and daf
             daf_first_and_4_longest_timestamp = self.fun_find_daf_first_and_longest_4_timestamp()
             print("Starting loop in gap of daf to find possible match timeoffset of MBR and Daf")
+            i=0 # for test
             for longtimegap in daf_first_and_4_longest_timestamp:
+                # For test
+                if i<4:
+                    i+=1
+                    continue
+                #
                 print("loop in longest 5 beam in timestamp gap in daf (including the very first):", longtimegap / 1000,
                       "msec")
                 if ((longtimegap + int(mbr_timestamp[-1]) - int(mbr_timestamp[0])) > self.read_daf.DataNo[-1]):
@@ -404,7 +410,20 @@ class class_daf_mbr2lmdout:
                     tempendpoint_offset = self.mbr_origin_timestamp[
                                               tempendpoint_index - 1] + 1000 - self.mbr_origin_timestamp[
                                               tempendpoint_index]
-            mbr_endpoint_offset.append(max(tempendpoint_offset, tempendpoint_offset_determinby_2ndpoint))
+                maximum_tempendpoint_offset=max(tempendpoint_offset, tempendpoint_offset_determinby_2ndpoint)
+                # some times endpoint+offset is higher than next point timeoffset, this endpoint offset will be 1000+pre point
+                previous_point=self.mbr_origin_timestamp[tempendpoint_index - 1]
+                this_point=self.mbr_origin_timestamp[tempendpoint_index]+maximum_tempendpoint_offset
+                try:
+                    next_point = self.mbr_origin_timestamp[tempendpoint_index + 1]
+                except:
+                    next_point=9999999999
+                if this_point > next_point:
+                    maximum_tempendpoint_offset = self.mbr_origin_timestamp[tempendpoint_index - 1]+1000- self.mbr_origin_timestamp[
+                                              tempendpoint_index]
+
+                tempendpoint_offset=maximum_tempendpoint_offset
+            mbr_endpoint_offset.append(tempendpoint_offset)
         return mbr_endpoint_offset
 
     def fun_mod_MBR(self, mbr_end_point, mbr_end_point_offset):
