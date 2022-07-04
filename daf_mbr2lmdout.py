@@ -241,9 +241,9 @@ class class_daf_mbr2lmdout:
             i=0 # for test
             for longtimegap in daf_first_and_4_longest_timestamp:
                 # For test
-                if i<4:
-                    i+=1
-                    continue
+                # if i<4:
+                #     i+=1
+                #     continue
                 #
                 print("loop in longest 5 beam in timestamp gap in daf (including the very first):", longtimegap / 1000,
                       "msec")
