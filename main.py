@@ -15,14 +15,14 @@ if __name__=="__main__":
     #parser.add_argument("-p","--mpos", required=False , nargs='?',  const="default_directory", help="write to .mpos file, following by directory and file name or default the same path as .daf",  default="nompos")
     parser.add_argument("-o", "--mpos", required=False, nargs='?',
                         help="write to .mpos file, following by directory and file name or default the same path as .daf")
-    parser.add_argument("-s","--showfigs", required=False,  action='store_true', help="show daf and related figures", default="False")
+    parser.add_argument("-s","--showfigs", required=False,  action='store_true', help="show daf and related figures", default=False)
     parser.add_argument("-m","--mbr", nargs='?',required=False, help="machine beam record .xml file path")
     parser.add_argument("-p", "--ptom", nargs='?', required=False, help="PTOM record .dat file path")
     parser.add_argument("-t", "--timeoffset", required=False, type=int, nargs='+',
                         help="Time offset in msec,to adjust results in ~250ms level that was added to system determined timeoffset value;multiple values are acceptable, e.g. -t 250 -250 100",
                         default=250)
     parser.add_argument("-w", "--writetxt", required=False, action='store_true', help="write all data in txt for plot",
-                        default="False")
+                        default=False)
     parser.add_argument("-l", "--lmdout", required=False, nargs='?',
                         help="write to .lmdout file directory, following by directory and file name or default the same path as MBR .xml")
     parser.add_argument("-i", "--initialspot", required=False, type=int, nargs='+',

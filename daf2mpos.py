@@ -34,7 +34,7 @@ class class_daf2mpos:
             mposFile.write("!fileversion "+ fileversion+"\n")
             mposFile.write("!filedate "+ dateinfo+"\n")
             mposFile.write("!Patient_name Unknown\n")
-            mposFile.write("!timeunit 1000\n")
+            mposFile.write("!timeunit 1\n")
             mposFile.write("!timeoffset "+str(self.timeoffset)+"\n")
             mposFile.write("!nomarkers 1\n")
             mposFile.write("!corrctno NO\n")
