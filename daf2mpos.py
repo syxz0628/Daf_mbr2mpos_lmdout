@@ -39,7 +39,7 @@ class class_daf2mpos:
             mposFile.write("!nomarkers 1\n")
             mposFile.write("!corrctno NO\n")
             mposFile.write("!mpos\n")
-            mposFile.write("# Meaning of the values is: time(*1000usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n")
+            mposFile.write("# Meaning of the values is: time(*1usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n")
             for i in range(0, len(daf_file_info.DataNo)):
                     mposFile.write(str(daf_file_info.DataNo[i]))
                     # corresponding CT number, should be implemented in the future.
