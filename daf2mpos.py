@@ -72,7 +72,7 @@ class class_daf2mpos:
                 if vallyflag:
                     RespLevel = 4.999
                 else:
-                    RespLevel = 5.999
+                    RespLevel = 4.001
             else:
                 RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
 
