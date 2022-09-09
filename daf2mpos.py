@@ -59,24 +59,27 @@ class class_daf2mpos:
             writempos_ab += str(daf_file_info.DataNo[i]/1000)
             writempos_ab += " -1 "
 
-            if daf_file_info.RespPhase=='2':
+            if daf_file_info.RespPhase[i]==2:
                 peakflag=True
                 vallyflag = False
-            elif daf_file_info.RespPhase=='4':
+            elif daf_file_info.RespPhase[i]==4:
                 peakflag = False
                 vallyflag = True
 
             if float(daf_file_info.RespLevel[i])<=0.2:
                 RespLevel=0.01
-            elif  float(daf_file_info.RespLevel[i])>99.99:
-                RespLevel = 9.99
+            elif float(daf_file_info.RespLevel[i])>99.99:
+                if vallyflag:
+                    RespLevel = 4.999
+                else:
+                    RespLevel = 5.999
             else:
                 RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
 
             if vallyflag:
                 writempos_ab += str(RespLevel) + " 0.0 0.0\n"
-            elif peakflag:
-                writempos_ab += str(10.00-RespLevel) + " 0.0 0.0\n"
+            else:
+                writempos_ab += str(10.00-float(RespLevel)) + " 0.0 0.0\n"
         with open(self.mpos_ab_file_path, "w") as mposabFile:
             mposabFile.writelines(writehead)
             mposabFile.writelines(writempos_ab)
