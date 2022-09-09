@@ -30,9 +30,9 @@ class class_daf2mpos:
 
         writehead=''
         writehead='!filetype MPOS\n'+"!fileversion "+ fileversion+"\n"+"!filedate "+ dateinfo+"\n"+\
-                  "!Patient_name Unknown\n"+"!timeunit 1\n"+"!timeoffset "+str(self.timeoffset)+"\n"+"!nomarkers 1\n"+\
+                  "!Patient_name Unknown\n"+"!timeunit 1000\n"+"!timeoffset "+str(self.timeoffset)+"\n"+"!nomarkers 1\n"+\
                   "!corrctno NO\n"+"!mpos\n"+\
-                  "# Meaning of the values is: time(*1usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n"
+                  "# Meaning of the values is: time(*1000usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n"
 
 # write mpos file
         with open(self.mpos_file_path,  "w") as mposFile:
@@ -40,10 +40,10 @@ class class_daf2mpos:
             #mposFile.write("!The original file is in:"+self.daf_file_path+"\n")
             mposFile.writelines(writehead)
             for i in range(0, len(daf_file_info.DataNo)):
-                    mposFile.write(str(daf_file_info.DataNo[i]))
+                    mposFile.write(str(daf_file_info.DataNo[i]/1000))
                     # corresponding CT number, should be implemented in the future.
                     mposFile.write(" -1 ")
-                    mposFile.write(str(daf_file_info.RespLevel[i])+" 0.000 0.000\n")
+                    mposFile.write(str(daf_file_info.RespLevel[i])+" 0.0 0.0\n")
             loginfo="mpos file was generated in: "+ self.mpos_file_path
             print(loginfo)
             related_funs.writelog(self.path2logfile, loginfo)
@@ -56,7 +56,7 @@ class class_daf2mpos:
             # self.DataNo.append(int(listFromLine[0]) * int(self.DataTime_msec) * 1000)
             # self.RespLevel.append(int(listFromLine[1]))
             # self.RespPhase.append(int(listFromLine[2]))
-            writempos_ab += str(daf_file_info.DataNo[i])
+            writempos_ab += str(daf_file_info.DataNo[i]/1000)
             writempos_ab += " -1 "
 
             if daf_file_info.RespPhase=='2':
@@ -74,9 +74,9 @@ class class_daf2mpos:
                 RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
 
             if vallyflag:
-                writempos_ab += str(RespLevel) + " 0.000 0.000\n"
+                writempos_ab += str(RespLevel) + " 0.0 0.0\n"
             elif peakflag:
-                writempos_ab += str(10.00-RespLevel) + " 0.000 0.000\n"
+                writempos_ab += str(10.00-RespLevel) + " 0.0 0.0\n"
         with open(self.mpos_ab_file_path, "w") as mposabFile:
             mposabFile.writelines(writehead)
             mposabFile.writelines(writempos_ab)
