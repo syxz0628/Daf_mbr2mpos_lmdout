@@ -5,6 +5,7 @@ class class_daf2mpos:
         self.path2logfile=path2logfile
         self.daf_file_path = daf_file_path
         self.mpos_file_path=mpos_file_path
+        self.mpos_ab_file_path = mpos_file_path[:mpos_file_path.rfind('.')]+'_ab.mpos'
         self.timeoffset=0
         try:
             self.fun_daf2mpos()
@@ -13,8 +14,6 @@ class class_daf2mpos:
             print(loginfo)
             related_funs.writelog(self.path2logfile,loginfo)
 
-
-            
     def fun_daf2mpos(self):
         loginfo = '\nFor: ' + self.daf_file_path
         related_funs.writelog(self.path2logfile, loginfo)
@@ -26,20 +25,20 @@ class class_daf2mpos:
         dateinfo=daf_file_info.date
         Start_Phase=daf_file_info.Start_Phase
         End_Phase=daf_file_info.End_Phase
+        #
 
+
+        writehead=''
+        writehead='!filetype MPOS\n'+"!fileversion "+ fileversion+"\n"+"!filedate "+ dateinfo+"\n"+\
+                  "!Patient_name Unknown\n"+"!timeunit 1\n"+"!timeoffset "+str(self.timeoffset)+"\n"+"!nomarkers 1\n"+\
+                  "!corrctno NO\n"+"!mpos\n"+\
+                  "# Meaning of the values is: time(*1usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n"
+
+# write mpos file
         with open(self.mpos_file_path,  "w") as mposFile:
             #mposFile.write("!comment This file was created by python script daf_mbr2mpos_lmdout tool\n")
             #mposFile.write("!The original file is in:"+self.daf_file_path+"\n")
-            mposFile.write("!filetype MPOS\n")
-            mposFile.write("!fileversion "+ fileversion+"\n")
-            mposFile.write("!filedate "+ dateinfo+"\n")
-            mposFile.write("!Patient_name Unknown\n")
-            mposFile.write("!timeunit 1\n")
-            mposFile.write("!timeoffset "+str(self.timeoffset)+"\n")
-            mposFile.write("!nomarkers 1\n")
-            mposFile.write("!corrctno NO\n")
-            mposFile.write("!mpos\n")
-            mposFile.write("# Meaning of the values is: time(*1usec) | corrctno | marker1_x | marker1_y | marker1_z | marker2_x | . . .\n")
+            mposFile.writelines(writehead)
             for i in range(0, len(daf_file_info.DataNo)):
                     mposFile.write(str(daf_file_info.DataNo[i]))
                     # corresponding CT number, should be implemented in the future.
@@ -48,3 +47,40 @@ class class_daf2mpos:
             loginfo="mpos file was generated in: "+ self.mpos_file_path
             print(loginfo)
             related_funs.writelog(self.path2logfile, loginfo)
+
+# write amplitude baed mpos file.
+        writempos_ab=''
+        peakflag=False
+        vallyflag=True
+        for i in range(0, len(daf_file_info.DataNo)):
+            # self.DataNo.append(int(listFromLine[0]) * int(self.DataTime_msec) * 1000)
+            # self.RespLevel.append(int(listFromLine[1]))
+            # self.RespPhase.append(int(listFromLine[2]))
+            writempos_ab += str(daf_file_info.DataNo[i])
+            writempos_ab += " -1 "
+
+            if daf_file_info.RespPhase=='2':
+                peakflag=True
+                vallyflag = False
+            elif daf_file_info.RespPhase=='4':
+                peakflag = False
+                vallyflag = True
+
+            if float(daf_file_info.RespLevel[i])<=0.2:
+                RespLevel=0.01
+            elif  float(daf_file_info.RespLevel[i])>99.99:
+                RespLevel = 9.99
+            else:
+                RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
+
+            if vallyflag:
+                writempos_ab += str(RespLevel) + " 0.000 0.000\n"
+            elif peakflag:
+                writempos_ab += str(10.00-RespLevel) + " 0.000 0.000\n"
+        with open(self.mpos_ab_file_path, "w") as mposabFile:
+            mposabFile.writelines(writehead)
+            mposabFile.writelines(writempos_ab)
+        loginfo="mpos amplitude based file was generated in: "+ self.mpos_ab_file_path
+        print(loginfo)
+        related_funs.writelog(self.path2logfile, loginfo)
+
