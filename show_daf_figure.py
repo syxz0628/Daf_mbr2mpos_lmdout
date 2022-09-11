@@ -184,18 +184,21 @@ class class_show_daf_MBR_fig:
         # plt.tight_layout()
 
         plt.show()
-    def fun_show_daf_fig(self):
+    def fun_show_daf_fig(self,mpos_ab_file_path):
         # self.daf_mbr2lmdout.read_daf=read_daf.class_read_daf(self.daf_file_path)
         # self.daf_mbr2lmdout.read_mbr=read_mbr.class_read_mbr(self.mbr_file_path)
         self.daf_mbr2lmdout = read_daf.class_read_daf(self.daf_file_path)
         BeamIn_arr = np.array(self.daf_mbr2lmdout.BeamIn)
         # float to int
         BeamIn_for_plot = np.int64(BeamIn_arr > 0)
+        mpos_ab_time_for_plot,mpos_ab_data_for_plot=self.read_mpos(mpos_ab_file_path)
+
+
 
         fig = plt.figure()
 
         # subplot 1 Resplevel
-        axRespLevel = plt.subplot(311)
+        axRespLevel = plt.subplot(411)
         # change to msec figure x axis.
         DataNo_msec = [i / 1000 for i in self.daf_mbr2lmdout.DataNo]
         axRespLevel.plot(DataNo_msec, self.daf_mbr2lmdout.RespLevel, label='Resplevel')
@@ -206,7 +209,7 @@ class class_show_daf_MBR_fig:
         axRespLevel.format_coord = self.format_coord
 
         # subplot 2 RespGateOut
-        axRespGateOut = plt.subplot(312, sharex=axRespLevel)
+        axRespGateOut = plt.subplot(412, sharex=axRespLevel)
         axRespGateOut.scatter(DataNo_msec, self.daf_mbr2lmdout.GateOut, color='green', label='RespGateOut')
         axRespGateOut.get_xaxis().set_visible(False)
 
@@ -215,18 +218,34 @@ class class_show_daf_MBR_fig:
         axRespGateOut.format_coord = self.format_coord
 
         # subplot 3 Beamin
-        axRespBeamin = plt.subplot(313, sharex=axRespLevel)
+        axRespBeamin = plt.subplot(413, sharex=axRespLevel)
         axRespBeamin.scatter(DataNo_msec, BeamIn_for_plot, color='orange', label='Beamin')
-        #        axRespBeamin.get_xaxis().set_visible(False)
+        axRespBeamin.get_xaxis().set_visible(False)
 
         axRespBeamin.set_ylabel('Beam On/Off')
         axRespBeamin.set_ylim(-0.5, 1.5)
         axRespBeamin.format_coord = self.format_coord
 
-        axRespBeamin.set_xlabel('Time(msec)')
+        # subplot 4 amplitude based mpos
+        axmpos_ab_state = plt.subplot(414, sharex=axRespLevel)
+        axmpos_ab_state.scatter(DataNo_msec, mpos_ab_data_for_plot, color='purple', label='mpos_ab_state')
+        axmpos_ab_state.get_xaxis().set_visible(False)
+        #axmpos_ab_state.set_ylabel('amplitude \nbased state')
+        axmpos_ab_state.set_ylim(0, 10)
+        axmpos_ab_state.format_coord = self.format_coord
+
+        # subplot 6 daf resp phase
+        axdaf_phase = plt.subplot(412, sharex=axRespLevel)
+        axdaf_phase.scatter(DataNo_msec, self.daf_mbr2lmdout.RespPhase, color='black', label='daf_phase')
+        #        axRespBeamin.get_xaxis().set_visible(False)
+        axdaf_phase.set_ylabel('daf phase')
+        axdaf_phase.set_ylim(0, 5)
+        axdaf_phase.format_coord = self.format_coord
+
+        axdaf_phase.set_xlabel('Time(msec)')
 
         # cross line
-        cursor = Cursor(axRespBeamin, horizOn=True, useblit=True, color='r', linewidth=1, linestyle='dotted')
+        cursor = Cursor(axmpos_ab_state, horizOn=True, useblit=True, color='r', linewidth=1, linestyle='dotted')
 
         # 不显示边框
         # [axRespLevel.spines[loc_axis].set_visible(False) for loc_axis in ['top','right','bottom','left']]
@@ -236,3 +255,19 @@ class class_show_daf_MBR_fig:
     # rebuild format_coord to show coordinate info in int format, not the scientific format.
     def format_coord(self, x, y):
         return 'x:%i, y:%i' % (x, y)
+    def read_mpos(self,mpospath):
+        timemsec=[]
+        datamsec=[]
+        timeunit=1 # usec
+        with open(mpospath,'r') as mposfile:
+            alllines=mposfile.readlines()
+        for oneline in alllines:
+            if 'timeunit' in oneline:
+                timeunit = float(oneline.split()[1])
+        for oneline in alllines:
+            onelinesplit=oneline.split()
+            if (onelinesplit[0][0].isdigit()):
+                timemsec.append(float(onelinesplit[0])*timeunit/1000)
+                datamsec.append(float(onelinesplit[2]))
+        return np.array(timemsec),np.array(datamsec)
+

@@ -59,7 +59,7 @@ class class_read_daf:
                     break
             for Line in AllLines:
                 listFromLine = Line.split(',')
-                if (listFromLine[0].isdigit()):
+                if (listFromLine[0][0].isdigit()):
                     # start data writing;
                     self.DataNo.append(int(listFromLine[0])*int(self.DataTime_msec)*1000)
                     self.RespLevel.append(int(listFromLine[1]))

@@ -39,10 +39,12 @@ if __name__=="__main__":
 #
 # define mpos file path. User defined or the same directory as daf.
     if (args.mpos==None):
-        directory = daf_file_path[:daf_file_path.rfind(".")+1]
-        mpos_file_path=directory+"mpos"
+        directory = daf_file_path[:daf_file_path.rfind(".")]
+        mpos_file_path=directory+".mpos"
+        mpos_ab_file_path = directory + "_ab.mpos"
     else:
         mpos_file_path=args.mpos
+        mpos_ab_file_path=args.mpos+"_ab.mpos"
 #
 # write mpos file.
     print("Detects write of mpos from .daf.")
@@ -72,7 +74,7 @@ if __name__=="__main__":
         print("No mbr file detected, script runs without generate the lmdout file")
         print("Detects show figures of daf.")
         showfig=sdaf.class_show_daf_MBR_fig(daf_file_path)
-        showfig.fun_show_daf_fig()
+        showfig.fun_show_daf_fig(mpos_ab_file_path)
     elif (args.mbr != None and args.showdebug == None and args.showdebug2 == None): # write lmdout and/or show mbr figure or debug figure.
         print("Detects write of lmdout from .daf and .mbr.")
         writelmdout = dmlmdout.class_daf_mbr2lmdout(daf_file_path, MBR_filepath, manual_timeoffset*1000,
