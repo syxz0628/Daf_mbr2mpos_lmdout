@@ -71,7 +71,7 @@ class class_daf2mpos:
             if float(daf_file_info.RespLevel[i])<=0.2:
                 RespLevel=0.01
             elif float(daf_file_info.RespLevel[i])>99.99:
-                RespLevel = 4.9999
+                RespLevel = 4.999
             else:
                 RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
 
