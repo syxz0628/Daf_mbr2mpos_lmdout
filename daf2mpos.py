@@ -58,7 +58,9 @@ class class_daf2mpos:
             # self.RespPhase.append(int(listFromLine[2]))
             writempos_ab += str(daf_file_info.DataNo[i]/1000)
             writempos_ab += " -1 "
-
+            # 2 means peak, 4 means vally
+            # after peak, if 3, goes down(resplevel), if 1, goes up(10-resplevel).
+            # after vally, if 1, goes up (resplevel), if 3, goes up(10-resplevel).
             if daf_file_info.RespPhase[i]==2:
                 peakflag=True
                 vallyflag = False
@@ -76,7 +78,7 @@ class class_daf2mpos:
             else:
                 RespLevel=("%.2f" % (float(daf_file_info.RespLevel[i])/20.0))
 
-            if vallyflag:
+            if daf_file_info.RespPhase[i]==1 or daf_file_info.RespPhase[i]==2:
                 writempos_ab += str(RespLevel) + " 0.0 0.0\n"
             else:
                 writempos_ab += str(10.00-float(RespLevel)) + " 0.0 0.0\n"
