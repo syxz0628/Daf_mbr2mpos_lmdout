@@ -209,13 +209,13 @@ class class_show_daf_MBR_fig:
         axRespLevel.format_coord = self.format_coord
 
         # subplot 2 RespGateOut
-        axRespGateOut = plt.subplot(412, sharex=axRespLevel)
-        axRespGateOut.scatter(DataNo_msec, self.daf_mbr2lmdout.GateOut, color='green', label='RespGateOut')
-        axRespGateOut.get_xaxis().set_visible(False)
-
-        axRespGateOut.set_ylabel('Gate On/Off')
-        axRespGateOut.set_ylim(-0.5, 1.5)
-        axRespGateOut.format_coord = self.format_coord
+        # axRespGateOut = plt.subplot(412, sharex=axRespLevel)
+        # axRespGateOut.scatter(DataNo_msec, self.daf_mbr2lmdout.GateOut, color='green', label='RespGateOut')
+        # axRespGateOut.get_xaxis().set_visible(False)
+        #
+        # axRespGateOut.set_ylabel('Gate On/Off')
+        # axRespGateOut.set_ylim(-0.5, 1.5)
+        # axRespGateOut.format_coord = self.format_coord
 
         # subplot 3 Beamin
         axRespBeamin = plt.subplot(413, sharex=axRespLevel)
@@ -234,7 +234,7 @@ class class_show_daf_MBR_fig:
         axmpos_ab_state.set_ylim(0, 10)
         axmpos_ab_state.format_coord = self.format_coord
 
-        # subplot 6 daf resp phase
+        # subplot 5 daf resp phase
         axdaf_phase = plt.subplot(412, sharex=axRespLevel)
         axdaf_phase.scatter(DataNo_msec, self.daf_mbr2lmdout.RespPhase, color='black', label='daf_phase')
         #        axRespBeamin.get_xaxis().set_visible(False)
