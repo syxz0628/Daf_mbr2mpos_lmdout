@@ -217,6 +217,14 @@ class class_show_daf_MBR_fig:
         # axRespGateOut.set_ylim(-0.5, 1.5)
         # axRespGateOut.format_coord = self.format_coord
 
+        # subplot 5 daf resp phase
+        axdaf_phase = plt.subplot(412, sharex=axRespLevel)
+        axdaf_phase.scatter(DataNo_msec, self.daf_mbr2lmdout.RespPhase, color='black', label='daf_phase')
+        axdaf_phase.get_xaxis().set_visible(False)
+        axdaf_phase.set_ylabel('daf phase')
+        axdaf_phase.set_ylim(0, 5)
+        axdaf_phase.format_coord = self.format_coord
+
         # subplot 3 Beamin
         axRespBeamin = plt.subplot(413, sharex=axRespLevel)
         axRespBeamin.scatter(DataNo_msec, BeamIn_for_plot, color='orange', label='Beamin')
@@ -229,20 +237,12 @@ class class_show_daf_MBR_fig:
         # subplot 4 amplitude based mpos
         axmpos_ab_state = plt.subplot(414, sharex=axRespLevel)
         axmpos_ab_state.scatter(DataNo_msec, mpos_ab_data_for_plot, color='purple', label='mpos_ab_state')
-        axmpos_ab_state.get_xaxis().set_visible(False)
+        #axmpos_ab_state.get_xaxis().set_visible(False)
         #axmpos_ab_state.set_ylabel('amplitude \nbased state')
         axmpos_ab_state.set_ylim(0, 10)
         axmpos_ab_state.format_coord = self.format_coord
 
-        # subplot 5 daf resp phase
-        axdaf_phase = plt.subplot(412, sharex=axRespLevel)
-        axdaf_phase.scatter(DataNo_msec, self.daf_mbr2lmdout.RespPhase, color='black', label='daf_phase')
-        #        axRespBeamin.get_xaxis().set_visible(False)
-        axdaf_phase.set_ylabel('daf phase')
-        axdaf_phase.set_ylim(0, 5)
-        axdaf_phase.format_coord = self.format_coord
-
-        axdaf_phase.set_xlabel('Time(msec)')
+        axmpos_ab_state.set_xlabel('Time(msec)')
 
         # cross line
         cursor = Cursor(axmpos_ab_state, horizOn=True, useblit=True, color='r', linewidth=1, linestyle='dotted')
