@@ -231,6 +231,7 @@ class class_show_daf_MBR_fig:
         axRespBeamin.get_xaxis().set_visible(False)
 
         axRespBeamin.set_ylabel('Beam On/Off')
+        axRespBeamin.set_ylabel('Beam On/Off')
         axRespBeamin.set_ylim(-0.5, 1.5)
         axRespBeamin.format_coord = self.format_coord
 
